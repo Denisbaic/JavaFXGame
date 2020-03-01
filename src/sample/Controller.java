@@ -290,7 +290,7 @@ public class Controller {
             PLAYER.setTranslateX(GameAreaLocation.getX()+GAME_AREA_WIDTH-PLAYER.getWidth()-1);
         }
     }
-    void checkPlayerOnIntersection(){
+    boolean checkPlayerOnIntersection(){
         Bounds PlayerBounds=PLAYER.getBoundsInParent();
         Bounds En1Bounds=ENEMY1.getBoundsInParent();
         Bounds En2Bounds=ENEMY2.getBoundsInParent();
@@ -306,18 +306,26 @@ public class Controller {
         else{
             isPlayerIntersect=false;
         }
+        return isPlayerIntersect;
     }
     void Loop(float DeltaSeconds){
-
-
         checkPlayerOnBound();
-
         En1.move(DeltaSeconds);
         En2.move(DeltaSeconds);
         En3.move(DeltaSeconds);
         En4.move(DeltaSeconds);
-        timeSeconds.set(timeSeconds.get()+DeltaSeconds);
-        checkPlayerOnIntersection();
-
+        if(checkPlayerOnIntersection()){
+            En1.isEnabled=false;
+            En2.isEnabled=false;
+            En3.isEnabled=false;
+            En4.isEnabled=false;
+        }
+        else {
+            En1.isEnabled=ENEMY1_ENABLE.isSelected();
+            En2.isEnabled=ENEMY2_ENABLE.isSelected();
+            En3.isEnabled=ENEMY3_ENABLE.isSelected();
+            En4.isEnabled=ENEMY4_ENABLE.isSelected();
+            timeSeconds.set(timeSeconds.get()+DeltaSeconds);
+        }
     }
 }
