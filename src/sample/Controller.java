@@ -268,7 +268,12 @@ public class Controller {
             }
         }
     }
-
+    void Restart(){
+        En1.setEnabled(true);
+        En2.setEnabled(true);
+        En3.setEnabled(true);
+        En4.setEnabled(true);
+    }
     void checkPlayerOnBound(){
         double translateX = PLAYER.getTranslateX();
         double translateY = PLAYER.getTranslateY();
