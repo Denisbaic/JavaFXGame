@@ -128,7 +128,7 @@ public class Controller {
         GAME_AREA_WIDTH=Math.abs(UP_LINE.getBoundsInParent().getMaxX()-UP_LINE.getBoundsInParent().getMinX());
         GAME_AREA_HEIGHT=Math.abs(RIGHT_LINE.getBoundsInParent().getMaxY()-RIGHT_LINE.getBoundsInParent().getMinY());
         GameAreaLocation=new Point2D(LEFT_LINE.getBoundsInParent().getMinX(),LEFT_LINE.getBoundsInParent().getMinY());
-        PLAYER.setOnMouseDragged(PlayerEvent);
+        PLAYER.setOnMouseDragged(PlayerPause);
         En1=new Enemy(20.0,20.0,100.0, ENEMY1, ENEMY1.getBoundsInParent().getMinX(), ENEMY1.getBoundsInParent().getMinY(),false);
         En2=new Enemy(30.0,20.0,100.0, ENEMY2, ENEMY2.getBoundsInParent().getMinX(), ENEMY2.getBoundsInParent().getMinY(),false);
         En3=new Enemy(70.0,20.0,100.0, ENEMY3, ENEMY3.getBoundsInParent().getMinX(), ENEMY3.getBoundsInParent().getMinY(),false);
@@ -281,13 +281,13 @@ public class Controller {
             PLAYER.setTranslateY(GameAreaLocation.getY()+1);
         }
         else if( (GameAreaLocation.getY()+GAME_AREA_HEIGHT-PLAYER.getHeight())<translateY){
-            PLAYER.setTranslateY(GameAreaLocation.getY()+GAME_AREA_HEIGHT-PLAYER.getHeight()-1);
+            PLAYER.setTranslateY(GameAreaLocation.getY()+GAME_AREA_HEIGHT-PLAYER.getHeight());
         }
         if(GameAreaLocation.getX()>=translateX){
             PLAYER.setTranslateX(GameAreaLocation.getX()+1);
         }
         else if( (GameAreaLocation.getX()+GAME_AREA_WIDTH-PLAYER.getWidth())<translateX){
-            PLAYER.setTranslateX(GameAreaLocation.getX()+GAME_AREA_WIDTH-PLAYER.getWidth()-1);
+            PLAYER.setTranslateX(GameAreaLocation.getX()+GAME_AREA_WIDTH-PLAYER.getWidth());
         }
     }
     boolean checkPlayerOnIntersection(){
