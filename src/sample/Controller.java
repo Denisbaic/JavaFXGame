@@ -1,30 +1,27 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import jdk.jfr.Enabled;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -70,6 +67,13 @@ public class Controller {
     private Text INTERSECTIONS;
     private IntegerProperty intersectionCount=new SimpleIntegerProperty(0);
 
+    @FXML
+    private CheckBox CONST_SPEED;
+    @FXML
+    private Text SPEED_TEXT;
+    @FXML
+    private Slider SPEED_VALUE;
+
     private double GAME_AREA_WIDTH, GAME_AREA_HEIGHT;
     private Point2D GameAreaLocation;
 
@@ -102,6 +106,7 @@ public class Controller {
                 PLAYER.setOnMouseDragged(PlayerPause);
             }
             else{
+                intersectionCount.set(0);
                 timeSeconds.set(0.f);
                 PLAYER.setOnMouseDragged(PlayerEvent);
             }
@@ -133,6 +138,7 @@ public class Controller {
         En2=new Enemy(30.0,20.0,100.0, ENEMY2, ENEMY2.getBoundsInParent().getMinX(), ENEMY2.getBoundsInParent().getMinY(),false);
         En3=new Enemy(70.0,20.0,100.0, ENEMY3, ENEMY3.getBoundsInParent().getMinX(), ENEMY3.getBoundsInParent().getMinY(),false);
         En4=new Enemy(20.0,-20.0,100.0,ENEMY4, ENEMY4.getBoundsInParent().getMinX(), ENEMY4.getBoundsInParent().getMinY(),false);
+        SPEED_TEXT.textProperty().bind(Bindings.format("%.2f",SPEED_VALUE.valueProperty()));
 
         GameLoop = new Timeline();
         GameLoop.setCycleCount(Timeline.INDEFINITE);
@@ -182,14 +188,21 @@ public class Controller {
                 ENEMY4_ENABLE.setDisable(false);
         }
     }
-
+    void increaseSpeed(double Add){
+        SPEED_VALUE.setValue(SPEED_VALUE.getValue()+Add);
+    }
+    void setSpeedForEnemy(double Speed){
+        En1.SpeedValue=Speed;
+        En2.SpeedValue=Speed;
+        En3.SpeedValue=Speed;
+        En4.SpeedValue=Speed;
+    }
     private class Enemy{
         Rectangle EnemyRec;
         Point2D SpeedVector;
         Double SpeedValue;
         boolean isEnabled;
         Point2D DefaultLocation;
-        Point2D SpawnLocation;
         Enemy(Double SpeedVecX, Double SpeedVecY,Double Speed, Rectangle EnemyRectangle,Double DefaultLocX,Double DefaultLocY, boolean isEnable){
             EnemyRec=EnemyRectangle;
             SpeedVector=new Point2D(SpeedVecX,SpeedVecY);
@@ -218,6 +231,7 @@ public class Controller {
             }
             isEnabled=isEnable;
         }
+
         void checkOnBound(){
             double translateX =  EnemyRec.getTranslateX();
             double translateY = EnemyRec.getTranslateY();
@@ -230,7 +244,7 @@ public class Controller {
                 _SpeedVecX=(double) ThreadLocalRandom.current().nextInt(-100, 100 + 1);
                 SpeedVecChanged=true;
             }
-            else if( (GameAreaLocation.getY()+GAME_AREA_HEIGHT-EnemyRec.getHeight())<translateY){
+            else if((GameAreaLocation.getY()+GAME_AREA_HEIGHT-EnemyRec.getHeight())<translateY){
                 EnemyRec.setTranslateY(GameAreaLocation.getY()+GAME_AREA_HEIGHT-EnemyRec.getHeight()-1);
                 _SpeedVecY= (double) ThreadLocalRandom.current().nextInt(-100, 0 + 1);
                 _SpeedVecX=(double) ThreadLocalRandom.current().nextInt(-100, 100 + 1);
@@ -314,6 +328,7 @@ public class Controller {
         En2.move(DeltaSeconds);
         En3.move(DeltaSeconds);
         En4.move(DeltaSeconds);
+
         if(checkPlayerOnIntersection()){
             En1.isEnabled=false;
             En2.isEnabled=false;
@@ -321,6 +336,10 @@ public class Controller {
             En4.isEnabled=false;
         }
         else {
+            if(!CONST_SPEED.isSelected()){
+                increaseSpeed(DeltaSeconds);
+            }
+            setSpeedForEnemy(Double.parseDouble(SPEED_TEXT.getText().replace(',','.')));
             En1.isEnabled=ENEMY1_ENABLE.isSelected();
             En2.isEnabled=ENEMY2_ENABLE.isSelected();
             En3.isEnabled=ENEMY3_ENABLE.isSelected();
