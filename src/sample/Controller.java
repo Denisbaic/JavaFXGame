@@ -15,8 +15,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -92,9 +90,7 @@ public class Controller {
     private EventHandler<MouseEvent> PlayerPause= new EventHandler<MouseEvent>()
     {
         @Override
-        public void handle(MouseEvent t) {
-
-        }
+        public void handle(MouseEvent t) {}
     };
     @FXML
     private void CHANGE_PAUSE(ActionEvent event) {
@@ -102,7 +98,6 @@ public class Controller {
             isPaused=!isPaused;
             if(isPaused)
             {
-
                 PLAYER.setOnMouseDragged(PlayerPause);
             }
             else{
